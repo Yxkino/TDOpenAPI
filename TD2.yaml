@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: STD23001 - Customer Management
+  version: '1.0.2'
+servers:
+  - url: https://localhost.std23001.com
+paths:
+  /customers:
+    get:
+      summary: Retrieve a list of customers
+      description: This request retrieves a paginated list of customers.
+      parameters:
+        - in: query
+          name: page
+          description: Page number to retrieve.
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: pageSize
+          description: Number of items per page.
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Customer list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      summary: Create new customers
+      description: This request allows creating multiple customers at once.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Customer's name
+                  age:
+                    type: integer
+                    description: Customer's age
+        required: true
+      responses:
+        '201':
+          description: List of created customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    put:
+      summary: Update customers
+      description: This request allows updating the information of multiple customers.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        '200':
+          description: List of updated customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    delete:
+      summary: Delete customers
+      description: This request allows deleting multiple customers by specifying their identifiers.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomerIdentifier'
+        required: true
+      responses:
+        '200':
+          description: List of deleted customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+components:
+  schemas:
+    Customer:
+      type: object
+      description: Representation of a customer
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the customer
+        name:
+          type: string
+          description: Customer's name
+        age:
+          type: integer
+          description: Customer's age
+    CustomerIdentifier:
+      type: object
+      description: Representation of a customer identifier
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the customer

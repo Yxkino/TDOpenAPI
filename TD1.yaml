@@ -1,0 +1,32 @@
+openapi: 3.0.3
+info:
+  title: STD23001 - Customer Management
+  version: '1.0.0'
+servers:
+  - url: https://localhost.std23001.com
+paths:
+  /customers:
+    get:
+      summary: Retrieve customer list
+      description: This request retrieves a list of customers.
+      responses:
+        '200':
+          description: Customer list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+components:
+  schemas:
+    Customer:
+      type: object
+      description: Representation of a customer
+      properties:
+        name:
+          type: string
+          description: Customer's name
+        age:
+          type: integer
+          description: Customer's age
