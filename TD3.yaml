@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: STD23001 - Meal Management
+  version: '1.0.2'
+servers:
+  - url: https://localhost.std23001.com
+paths:
+  /meals:
+    get:
+      summary: Retrieve a list of meals
+      description: This request retrieves a paginated list of meals.
+      parameters:
+        - in: query
+          name: page
+          description: Page number to retrieve.
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: pageSize
+          description: Number of items per page.
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Meal list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+    post:
+      summary: Create new meals
+      description: This request allows creating multiple meals at once.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/MealInput'
+        required: true
+      responses:
+        '201':
+          description: List of created meals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+    put:
+      summary: Update meals
+      description: This request allows updating the information of multiple meals.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Meal'
+        required: true
+      responses:
+        '200':
+          description: List of updated meals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+    delete:
+      summary: Delete meals
+      description: This request allows deleting multiple meals by specifying their identifiers.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/MealIdentifier'
+        required: true
+      responses:
+        '200':
+          description: List of deleted meals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+components:
+  schemas:
+    Meal:
+      type: object
+      description: Representation of a meal
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the meal
+        name:
+          type: string
+          description: Name of the meal
+        price:
+          type: number
+          format: float
+          description: Price of the meal
+    MealInput:
+      type: object
+      description: Input data for creating or updating a meal
+      properties:
+        name:
+          type: string
+          description: Name of the meal
+        price:
+          type: number
+          format: float
+          description: Price of the meal
+    MealIdentifier:
+      type: object
+      description: Representation of a meal identifier
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the meal

@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: STD23001 - Customer and Order Management
+  version: '1.0.4'
+servers:
+  - url: https://localhost.std23001.com
+paths:
+  /customers:
+    get:
+      summary: Retrieve a list of customers
+      description: This request retrieves a paginated list of customers.
+      parameters:
+        - in: query
+          name: page
+          description: The page number to retrieve.
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: pageSize
+          description: Number of items per page.
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      summary: Create a new customer
+      description: This request creates a new customer.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the customer
+                age:
+                  type: integer
+                  description: Age of the customer
+        required: true
+      responses:
+        '201':
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    put:
+      summary: Update a customer
+      description: This request updates all properties of an existing customer.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Unique identifier of the customer
+                name:
+                  type: string
+                  description: Name of the customer
+                age:
+                  type: integer
+                  description: Age of the customer
+        required: true
+      responses:
+        '200':
+          description: Customer updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    patch:
+      summary: Partially update a customer
+      description: This request updates one or more properties of an existing customer.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Unique identifier of the customer
+                name:
+                  type: string
+                  description: Name of the customer (optional)
+                age:
+                  type: integer
+                  description: Age of the customer (optional)
+        required: true
+      responses:
+        '200':
+          description: Customer partially updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+  /customers/{customerId}/orders:
+    get:
+      summary: Retrieve a list of orders for a specific customer
+      description: This request retrieves a list of orders for a specific customer.
+      parameters:
+        - in: path
+          name: customerId
+          description: Unique identifier of the customer
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: page
+          description: The page number to retrieve.
+          schema:
+            type: integer
+          required: true
+        - in: query
+          name: pageSize
+          description: Number of items per page.
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: List of orders for the customer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+    post:
+      summary: Create a new order for a customer
+      description: This request creates a new order for a specific customer.
+      parameters:
+        - in: path
+          name: customerId
+          description: Unique identifier of the customer
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                meals:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier of the meal
+                      quantity:
+                        type: integer
+                        description: Quantity of the meal ordered
+                orderDatetime:
+                  type: string
+                  format: date-time
+                  description: Date and time when the order was placed
+        required: true
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+    put:
+      summary: Update an order for a customer
+      description: This request updates all properties of an existing order for a specific customer.
+      parameters:
+        - in: path
+          name: customerId
+          description: Unique identifier of the customer
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reference:
+                  type: string
+                  description: Unique order reference number
+                meals:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier of the meal
+                      quantity:
+                        type: integer
+                        description: Quantity of the meal ordered
+                orderDatetime:
+                  type: string
+                  format: date-time
+                  description: Date and time when the order was placed
+        required: true
+      responses:
+        '200':
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+  /meals:
+    get:
+      summary: Retrieve a list of meals
+      description: This request retrieves a list of available meals.
+      responses:
+        '200':
+          description: List of meals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+components:
+  schemas:
+    Customer:
+      type: object
+      description: Representation of a customer
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the customer
+        name:
+          type: string
+          description: Name of the customer
+        age:
+          type: integer
+          description: Age of the customer
+    Meal:
+      type: object
+      description: Representation of a meal
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the meal
+        name:
+          type: string
+          description: Name of the meal
+        price:
+          type: number
+          format: decimal
+          description: Price of the meal
+    Order:
+      type: object
+      description: Representation of an order
+      properties:
+        reference:
+          type: string
+          description: Unique order reference number
+        meals:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Unique identifier of the meal
+              quantity:
+                type: integer
+                description: Quantity of the meal ordered
+        orderDatetime:
+          type: string
+          format: date-time
+          description: Date and time when the order was placed
